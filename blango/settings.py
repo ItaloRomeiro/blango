@@ -27,9 +27,20 @@ SECRET_KEY = 'django-insecure-+sn%dpa!086+g+%44z9*^j^q-u4n!j(#wl)x9a%_1op@zz2+1-
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-X_FRAME_OPTIONS = 'ALLOW-FROM' + os.environ.get('CODIO_HOSTNAME') + '-8000.codio.io'
+
+# Configure frame options and CSRF origins safely depending on environment
+CODIO_HOSTNAME = os.environ.get('CODIO_HOSTNAME')
+
+# Django 3.2 no longer supports 'ALLOW-FROM'; default to SAMEORIGIN
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+# CSRF settings
 CSRF_COOKIE_SAMESITE = None
-CSRF_TRUSTED_ORIGINS = ['https://' + os.environ.get('CODIO_HOSTNAME') + '-8000.codio.io']
+if CODIO_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS = [f'https://{CODIO_HOSTNAME}-8000.codio.io']
+else:
+    CSRF_TRUSTED_ORIGINS = []
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SAMESITE = 'None'

@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "name": "Django (Runserver)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["runserver"],
+      "console": "integratedTerminal",
+      "django": true,
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "blango.settings",
+        "DJANGO_CONFIGURATION": "Development"
+      }
+    }
+  ]
+}

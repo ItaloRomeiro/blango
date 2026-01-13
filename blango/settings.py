@@ -10,6 +10,8 @@ from configurations import Configuration, values
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
 
 class Common(Configuration):
     # SECURITY WARNING: keep the secret key used in production secret!
@@ -119,6 +121,49 @@ class Common(Configuration):
     # django-crispy-forms settings
     CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
     CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+    # Logging configuration
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "verbose": {
+                "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+            },
+            "simple": {"format": "[%(levelname)s] %(message)s"},
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "simple",
+                "level": "DEBUG" if DEBUG else "INFO",
+            },
+            "file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "filename": str(LOG_DIR / "blango.log"),
+                "maxBytes": 1048576,
+                "backupCount": 3,
+                "formatter": "verbose",
+                "level": "DEBUG" if DEBUG else "INFO",
+            },
+        },
+        "loggers": {
+            "": {  # root logger
+                "handlers": ["console", "file"],
+                "level": "DEBUG" if DEBUG else "INFO",
+            },
+            "django": {
+                "handlers": ["console"],
+                "level": "INFO",
+                "propagate": True,
+            },
+            "blog": {
+                "handlers": ["console", "file"],
+                "level": "DEBUG" if DEBUG else "INFO",
+                "propagate": False,
+            },
+        },
+    }
 
 
 class Development(Common):
